@@ -13,6 +13,4 @@ components:
       volumeMounts:
         - name: checode
           path: /checode-mount
-  - name: checode
-    volume:
-      size: 1G
+
