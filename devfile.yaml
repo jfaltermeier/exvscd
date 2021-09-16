@@ -1,0 +1,18 @@
+schemaVersion: 2.1.0
+metadata:
+  name: spring-petclinic
+components:
+  - name: tools
+    container:
+      image: quay.io/fbenoit/alpine:libstdc
+      command: ['tail']
+      args: ['-f', '/dev/null']
+      memoryLimit: 4Gi
+      cpuLimit: 1500m
+      cpuRequest: 600m
+      volumeMounts:
+        - name: checode
+          path: /checode-mount
+  - name: checode
+    volume:
+      size: 1G
