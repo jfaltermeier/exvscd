@@ -5,8 +5,8 @@ components:
   - name: tools
     container:
       image: quay.io/fbenoit/alpine:libstdc
-      command: ['tail']
-      args: ['-f', '/dev/null']
+      command:
+      - /checode-mount/entrypoint-volume.sh
       memoryLimit: 4Gi
       cpuLimit: 1500m
       cpuRequest: 600m
