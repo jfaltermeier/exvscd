@@ -9,35 +9,6 @@ events:
   preStart:
     - init-container-command
 components:
-  - name: donothing
-    container:
-      image: 'registry.access.redhat.com/ubi8/ubi-minimal'
-      volumeMounts:
-        - name: checode
-          path: /checode-mount
-      mountSources: true
-      memoryLimit: 512M
-      cpuLimit: 1500m
-      cpuRequest: 100m
-      command:
-        - "tail"
-        - "-f"
-        - "/dev/null"
-      endpoints:
-        - name: che-code
-          attributes:
-            type: main
-            cookiesAuthEnabled: true
-            discoverable: false
-            urlRewriteSupported: true
-          targetPort: 8080
-          exposure: public
-          secure: false
-          protocol: https
-    attributes:
-      app.kubernetes.io/component: che-code
-      app.kubernetes.io/part-of: che-code.eclipse.org
-
   - name: che-code-injector
     container:
       image: 'quay.io/fbenoit/tmp:1.60.1b'
@@ -49,6 +20,17 @@ components:
       memoryRequest: 32Mi
       cpuLimit: 500m
       cpuRequest: 30m
+      endpoints:
+        - name: che-code
+          attributes:
+            type: main
+            cookiesAuthEnabled: true
+            discoverable: false
+            urlRewriteSupported: true
+          targetPort: 8080
+          exposure: public
+          secure: false
+          protocol: https
     attributes:
       app.kubernetes.io/component: che-code-injector
       app.kubernetes.io/part-of: che-code.eclipse.org
