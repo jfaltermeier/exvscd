@@ -4,7 +4,7 @@ metadata:
 components:
   - name: tools
     container:
-      image: quay.io/fbenoit/alpine:libstdc
+      image: quay.io/fbenoit/alpine:jdk11
       command:
       - /checode-mount/entrypoint-volume.sh
       memoryLimit: 4Gi
