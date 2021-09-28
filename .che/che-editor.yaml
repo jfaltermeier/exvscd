@@ -11,7 +11,7 @@ events:
 components:
   - name: che-code-injector
     container:
-      image: 'quay.io/fbenoit/tmp:1.60.1c'
+      image: 'quay.io/fbenoit/che-code:next'
       command: ["/checode/entrypoint-init-container.sh"]
       volumeMounts:
         - name: checode
