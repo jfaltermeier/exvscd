@@ -17,7 +17,7 @@ components:
         - name: custom
           attributes:
             discoverable: true
-          targetPort: 3100
+          targetPort: 8080
           exposure: public
           secure: false
           protocol: http
