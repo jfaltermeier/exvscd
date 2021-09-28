@@ -17,7 +17,7 @@ components:
         - name: che-code
           attributes:
             discoverable: true
-          targetPort: 8080
+          targetPort: 3100
           exposure: public
           secure: false
           protocol: http
