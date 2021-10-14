@@ -19,4 +19,3 @@ components:
       command: ["tail", "-f", "/dev/null"]
       memoryLimit: 128Mi
       cpuLimit: 500m
-
