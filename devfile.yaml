@@ -1,12 +1,22 @@
 schemaVersion: 2.1.0
 metadata:
   name: my-dummy-project
+events:
+  postStart:
+    - start-che-code
+commands:
+  - id: start-che-code:
+    exec:
+      commandLine: /checode-mount/entrypoint-volume.sh
+      component: tools
 components:
   - name: tools
     container:
       image: quay.io/fbenoit/alpine:jdk11
       command:
-      - /checode-mount/entrypoint-volume.sh
+      - tail
+      - '-f'
+      - /dev/null
       memoryLimit: 4Gi
       cpuLimit: 1500m
       cpuRequest: 600m
