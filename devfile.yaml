@@ -2,7 +2,7 @@ schemaVersion: 2.1.0
 metadata:
   name: my-dummy-inline-project
 attributes:  
-  .che/che-editor.yaml: | 
+  che-editor.yaml: | 
     schemaVersion: 2.1.0
     metadata:
       name: che-code
