@@ -1,47 +1,47 @@
 schemaVersion: 2.1.0
 metadata:
   name: my-dummy-inline-project
-attributes:  
-  che-editor.yaml: | 
-    schemaVersion: 2.1.0
-    metadata:
-      name: che-code
-    commands:
-      - id: init-container-command
-        apply:
-          component: che-code-injector
-    events:
-      preStart:
-        - init-container-command
-    components:
-      - name: che-code-injector
-        container:
-          image: 'quay.io/fbenoit/tmp:1.60.1c'
-          command: ["/checode/entrypoint-init-container.sh"]
-          volumeMounts:
-            - name: checode
-              path: /checode-mount
-          memoryLimit: 128Mi
-          memoryRequest: 32Mi
-          cpuLimit: 500m
-          cpuRequest: 30m
-          endpoints:
-            - name: che-code
-              attributes:
-                type: main
-                cookiesAuthEnabled: true
-                discoverable: false
-                urlRewriteSupported: true
-              targetPort: 8080
-              exposure: public
-              secure: false
-              protocol: https
-        attributes:
-          app.kubernetes.io/component: che-code-injector
-          app.kubernetes.io/part-of: che-code.eclipse.org
-      - name: checode
-        volume:
-          ephemeral: true
+# attributes:  
+#   che-editor.yaml: | 
+#     schemaVersion: 2.1.0
+#     metadata:
+#       name: che-code
+#     commands:
+#       - id: init-container-command
+#         apply:
+#           component: che-code-injector
+#     events:
+#       preStart:
+#         - init-container-command
+#     components:
+#       - name: che-code-injector
+#         container:
+#           image: 'quay.io/fbenoit/tmp:1.60.1c'
+#           command: ["/checode/entrypoint-init-container.sh"]
+#           volumeMounts:
+#             - name: checode
+#               path: /checode-mount
+#           memoryLimit: 128Mi
+#           memoryRequest: 32Mi
+#           cpuLimit: 500m
+#           cpuRequest: 30m
+#           endpoints:
+#             - name: che-code
+#               attributes:
+#                 type: main
+#                 cookiesAuthEnabled: true
+#                 discoverable: false
+#                 urlRewriteSupported: true
+#               targetPort: 8080
+#               exposure: public
+#               secure: false
+#               protocol: https
+#         attributes:
+#           app.kubernetes.io/component: che-code-injector
+#           app.kubernetes.io/part-of: che-code.eclipse.org
+#       - name: checode
+#         volume:
+#           ephemeral: true
 components:
   - name: tools
     container:
