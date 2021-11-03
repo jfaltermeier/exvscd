@@ -1,6 +1,6 @@
 schemaVersion: 2.1.0
 metadata:
-  name: my-dummy-inline-project
+  name: my-dummy-theia-inline-project
 attributes:  
   che-theia.eclipse.org/sidecar-policy: USE_DEV_CONTAINER
   che-editor.yaml: | 
