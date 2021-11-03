@@ -171,3 +171,4 @@ attributes:
       - name: remote-endpoint
         volume:
           ephemeral: true
+components: []
