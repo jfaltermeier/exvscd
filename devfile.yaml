@@ -5,58 +5,170 @@ attributes:
   che-editor.yaml: | 
     schemaVersion: 2.1.0
     metadata:
-      name: che-code
+      name: eclipse/che-theia/next
+      displayName: theia-ide
+      description: Eclipse Theia, get the latest release each day.
+      icon: https://raw.githubusercontent.com/theia-ide/theia/master/logo/theia-logo-no-text-black.svg?sanitize=true
+      attributes:
+        publisher: eclipse
+        version: next
+        title: Eclipse Theia development version.
+        repository: https://github.com/eclipse-che/che-theia
+        firstPublicationDate: '2019-03-07'
     commands:
-      - id: init-container-command
+      - id: init-remote-runtime-injector
         apply:
-          component: che-code-injector
+          component: remote-runtime-injector
     events:
       preStart:
-        - init-container-command
+        - init-remote-runtime-injector
     components:
-      - name: che-code-injector
+      - name: theia-ide
         container:
-          image: 'quay.io/fbenoit/tmp:1.60.1c'
-          command: ["/checode/entrypoint-init-container.sh"]
+          image: 'quay.io/eclipse/che-theia:next'
+          env:
+            - name: THEIA_PLUGINS
+              value: 'local-dir:///plugins'
+            - name: HOSTED_PLUGIN_HOSTNAME
+              value: 0.0.0.0
+            - name: HOSTED_PLUGIN_PORT
+              value: '3130'
+            - name: THEIA_HOST
+              value: 127.0.0.1
           volumeMounts:
-            - name: checode
-              path: /checode-mount
-          memoryLimit: 128Mi
-          memoryRequest: 32Mi
-          cpuLimit: 500m
-          cpuRequest: 30m
+            - name: plugins
+              path: /plugins
+            - name: theia-local
+              path: /home/theia/.theia
+          mountSources: true
+          memoryLimit: 512M
+          cpuLimit: 1500m
+          cpuRequest: 100m
           endpoints:
-            - name: che-code
+            - name: theia
+              exposure: public
+              secure: true
+              targetPort: 3100
               attributes:
                 type: main
                 cookiesAuthEnabled: true
                 discoverable: false
                 urlRewriteSupported: true
-              targetPort: 8080
+              protocol: http
+            - name: webviews
+              targetPort: 3100
               exposure: public
-              secure: false
-              protocol: https
+              secure: true
+              protocol: http
+              attributes:
+                type: webview
+                cookiesAuthEnabled: true
+                discoverable: false
+                unique: true
+                urlRewriteSupported: true
+            - name: mini-browser
+              targetPort: 3100
+              exposure: public
+              secure: true
+              protocol: http
+              attributes:
+                type: mini-browser
+                cookiesAuthEnabled: true
+                discoverable: false
+                unique: true
+                urlRewriteSupported: true
+            - name: theia-dev
+              targetPort: 3130
+              exposure: public
+              protocol: http
+              attributes:
+                type: ide-dev
+                discoverable: false
+                urlRewriteSupported: true
+            - name: theia-redirect-1
+              targetPort: 13131
+              exposure: public
+              protocol: http
+              attributes:
+                discoverable: false
+                urlRewriteSupported: true
+            - name: theia-redirect-2
+              targetPort: 13132
+              exposure: public
+              protocol: http
+              attributes:
+                discoverable: false
+                urlRewriteSupported: true
+            - name: theia-redirect-3
+              targetPort: 13133
+              exposure: public
+              protocol: http
+              attributes:
+                discoverable: false
+                urlRewriteSupported: true
         attributes:
-          app.kubernetes.io/component: che-code-injector
-          app.kubernetes.io/part-of: che-code.eclipse.org
-      - name: checode
+          app.kubernetes.io/component: che-theia
+          app.kubernetes.io/part-of: che-theia.eclipse.org
+          ports:
+            - exposedPort: 3100
+            - exposedPort: 3130
+            - exposedPort: 13131
+            - exposedPort: 13132
+            - exposedPort: 13133
+      - name: plugins
+        volume: {}
+      - name: theia-local
+        volume: {}
+      - name: che-machine-exec
+        container:
+          image: 'quay.io/eclipse/che-machine-exec:next'
+          memoryLimit: 128Mi
+          memoryRequest: 32Mi
+          cpuLimit: 500m
+          cpuRequest: 30m
+          command:
+            - /go/bin/che-machine-exec
+            - '--url'
+            - '127.0.0.1:3333'
+            - '--idle-timeout'
+            - '15m'
+          endpoints:
+            - name: terminal
+              targetPort: 3333
+              exposure: public
+              secure: true
+              protocol: ws
+              attributes:
+                type: collocated-terminal
+                discoverable: false
+                cookiesAuthEnabled: true
+                urlRewriteSupported: true
+        attributes:
+          app.kubernetes.io/component: machine-exec
+          app.kubernetes.io/part-of: che-theia.eclipse.org
+          ports:
+            - exposedPort: 3333
+      - name: remote-runtime-injector
+        attributes:
+          app.kubernetes.io/component: remote-runtime-injector
+          app.kubernetes.io/part-of: che-theia.eclipse.org
+        container:
+          image: 'quay.io/eclipse/che-theia-endpoint-runtime-binary:next'
+          memoryLimit: 128Mi
+          memoryRequest: 32Mi
+          cpuLimit: 500m
+          cpuRequest: 30m
+          env:
+            - name: PLUGIN_REMOTE_ENDPOINT_EXECUTABLE
+              value: /remote-endpoint/plugin-remote-endpoint
+            - name: REMOTE_ENDPOINT_VOLUME_NAME
+              value: remote-endpoint
+          volumeMounts:
+            - name: plugins
+              path: /plugins
+            - name: remote-endpoint
+              path: /remote-endpoint
+      - name: remote-endpoint
         volume:
           ephemeral: true
 components:
-  - name: tools
-    container:
-      image: quay.io/fbenoit/alpine:jdk11
-      command:
-      - /checode-mount/entrypoint-volume.sh
-      memoryLimit: 4Gi
-      cpuLimit: 1500m
-      cpuRequest: 600m
-      volumeMounts:
-        - name: checode
-          path: /checode-mount
-  - name: anothercontainer
-    container:
-      image: quay.io/eclipse/che--centos--mongodb-36-centos7:latest-a915db7beca87198fcd7860086989fe8a327a1a4f6508025b64ab28fcc7423b2
-      command: ["tail", "-f", "/dev/null"]
-      memoryLimit: 128Mi
-      cpuLimit: 500m
