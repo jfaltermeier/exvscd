@@ -26,7 +26,7 @@ attributes:
     components:
       - name: theia-ide
         container:
-          image: 'quay.io/eclipse/che-theia:latest'
+          image: 'quay.io/eclipse/che-theia:next'
           env:
             - name: THEIA_PLUGINS
               value: 'local-dir:///plugins'
